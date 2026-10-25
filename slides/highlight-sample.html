@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>공원 옆에 살면 정말 더 시원할까? — 하이라이트 샘플</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+  <style>
+    :root { --ink:#102a43; --blue:#2474b5; --sky:#eaf5ff; --teal:#2f855a; --coral:#e76f51; --paper:#f7fafc; }
+    * { box-sizing:border-box; }
+    html, body { margin:0; min-height:100%; background:#dce5eb; color:var(--ink); font-family:"Noto Sans KR",system-ui,sans-serif; }
+    button { font:inherit; cursor:pointer; }
+    .deck { width:min(1440px, 100vw); min-height:100vh; margin:auto; overflow:hidden; background:var(--paper); }
+    .toolbar { height:64px; display:flex; align-items:center; justify-content:space-between; padding:0 5.5vw; background:rgba(255,255,255,.9); border-bottom:1px solid #dbe5ec; }
+    .brand { display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700; letter-spacing:-.02em; }
+    .brand i { width:11px; height:11px; display:block; border-radius:50%; background:var(--coral); }
+    .theme-toggle { display:flex; padding:3px; gap:3px; background:#edf2f5; border-radius:7px; }
+    .theme-toggle button { border:0; background:transparent; border-radius:4px; padding:8px 12px; color:#526575; font-size:12px; }
+    .theme-toggle button.active { background:#fff; color:var(--ink); box-shadow:0 1px 3px #aab8c333; }
+    .slide { display:none; min-height:calc(100vh - 64px); padding:clamp(36px,6vw,92px) 9vw 50px; position:relative; }
+    .slide.active { display:grid; }
+    .eyebrow { margin:0 0 18px; font-family:"DM Mono",monospace; font-size:12px; letter-spacing:.08em; color:var(--blue); }
+    h1,h2,p { margin-top:0; }
+    h1 { max-width:920px; margin-bottom:24px; font-size:clamp(42px,6vw,84px); line-height:1.14; letter-spacing:-.065em; font-weight:700; }
+    .lead { max-width:620px; margin-bottom:30px; color:#456073; font-size:clamp(17px,1.55vw,22px); line-height:1.65; word-break:keep-all; }
+    .accent { color:var(--teal); }
+    .hero { align-content:center; grid-template-columns:1.1fr .9fr; gap:6vw; }
+    .hero-graphic { min-height:360px; position:relative; display:grid; place-items:center; }
+    .sun { width:clamp(140px,18vw,240px); aspect-ratio:1; border-radius:50%; background:var(--coral); position:absolute; top:5%; right:11%; opacity:.92; }
+    .park { width:min(310px,80%); aspect-ratio:1.35; position:relative; z-index:1; transform:skewY(-4deg); background:#58a96d; border-radius:48% 52% 43% 57% / 54% 41% 59% 46%; }
+    .park::before,.park::after { content:""; position:absolute; border-radius:50%; background:#8ed18b; }
+    .park::before { width:38%; height:28%; top:20%; left:19%; } .park::after { width:23%; height:19%; right:19%; bottom:22%; }
+    .road { position:absolute; z-index:2; width:95%; height:75px; border-top:14px solid #dae4e7; border-bottom:14px solid #dae4e7; transform:rotate(-9deg); }
+    .house { position:absolute; z-index:3; right:2%; bottom:8%; width:88px; height:70px; background:#fff; border:8px solid #1d4055; border-radius:5px; }
+    .house::before { content:""; position:absolute; width:0; height:0; left:-16px; top:-48px; border-left:52px solid transparent; border-right:52px solid transparent; border-bottom:44px solid #1d4055; }
+    .tag { position:absolute; z-index:4; right:3%; top:15%; padding:9px 11px; border-radius:5px; background:#fff; color:#27495e; font-size:13px; box-shadow:0 8px 20px #17314b18; }
+    .tag strong { display:block; color:var(--coral); font-size:18px; }
+    .hint { align-self:end; display:flex; align-items:center; gap:10px; color:#637b8b; font-size:12px; }
+    .dot { width:8px; height:8px; border-radius:50%; background:var(--blue); animation:pulse 1.6s infinite; }
+    @keyframes pulse { 50% { transform:scale(1.8); opacity:.25; } }
+    .lesson { grid-template-rows:auto 1fr auto; }
+    .lesson-head { display:flex; align-items:end; justify-content:space-between; gap:20px; }
+    h2 { font-size:clamp(30px,4.2vw,58px); letter-spacing:-.06em; line-height:1.18; }
+    .definition { max-width:360px; color:#526575; font-size:14px; line-height:1.6; }
+    .definition b { color:var(--ink); }
+    .compare { align-self:center; display:grid; grid-template-columns:1fr 1fr; gap:clamp(22px,5vw,76px); max-width:1050px; }
+    .zone { display:grid; gap:14px; }
+    .zone-top { display:flex; align-items:center; justify-content:space-between; font-size:15px; font-weight:600; }
+    .zone span { font-family:"DM Mono",monospace; color:#647989; font-size:12px; font-weight:400; }
+    .thermo { height:82px; border-radius:5px; overflow:hidden; display:flex; align-items:stretch; background:#dce8ed; }
+    .thermo div { width:72%; background:var(--blue); } .thermo.warm div { background:var(--coral); }
+    .thermo label { display:flex; align-items:center; padding-left:15px; color:white; font-size:15px; font-weight:600; white-space:nowrap; }
+    .checklist { display:flex; gap:11px; flex-wrap:wrap; border-top:1px solid #dbe5ec; padding-top:24px; }
+    .checklist div { padding:10px 13px; border-radius:4px; background:#fff; color:#39566a; font-size:13px; }
+    .checklist b { color:var(--blue); margin-right:7px; }
+    .note { position:absolute; right:9vw; bottom:20px; color:#758795; font-size:11px; }
+    .nav { position:absolute; display:flex; gap:8px; right:9vw; bottom:43px; }
+    .nav button { width:38px; height:34px; border:1px solid #bdd0dc; border-radius:4px; background:#fff; color:var(--ink); }
+    .nav button:hover { background:var(--blue); border-color:var(--blue); color:#fff; }
+
+    /* Concept 2: Tesla-inspired — white gallery, one accent, no decorative UI */
+    .deck.tesla { --ink:#171a20; --blue:#3e6ae1; --paper:#fff; --teal:#171a20; --coral:#171a20; background:#fff; }
+    .deck.tesla .toolbar { background:#fff; border:0; padding:0 4.2vw; }
+    .deck.tesla .brand i { border-radius:0; background:var(--blue); }
+    .deck.tesla .theme-toggle { background:#f4f4f4; border-radius:4px; }
+    .deck.tesla .theme-toggle button,.deck.tesla .theme-toggle button.active,.deck.tesla .nav button { border-radius:4px; box-shadow:none; }
+    .deck.tesla .hero { background:#f4f4f4; padding-left:10vw; padding-right:10vw; }
+    .deck.tesla h1 { font-weight:500; letter-spacing:-.055em; max-width:780px; }
+    .deck.tesla .lead { color:#393c41; }
+    .deck.tesla .accent { color:var(--blue); }
+    .deck.tesla .sun { background:#3e6ae1; opacity:1; border-radius:0; width:38%; aspect-ratio:1.7; top:13%; right:-8%; }
+    .deck.tesla .park { background:#171a20; border-radius:0; transform:none; clip-path:polygon(6% 0,100% 0,94% 100%,0 100%); }
+    .deck.tesla .park::before,.deck.tesla .park::after { background:#fff; border-radius:0; opacity:.27; }
+    .deck.tesla .road { border-color:#fff; transform:rotate(-8deg); }
+    .deck.tesla .house { border-radius:0; border-color:#171a20; }
+    .deck.tesla .house::before { border-bottom-color:#171a20; }
+    .deck.tesla .tag { box-shadow:none; border-radius:0; }
+    .deck.tesla .tag strong { color:#3e6ae1; }
+    .deck.tesla .checklist div { background:#f4f4f4; border-radius:0; }
+    .deck.tesla .note { color:#5c5e62; }
+    @media (max-width:760px) { .toolbar{padding:0 22px}.brand{font-size:11px}.theme-toggle button{padding:7px 8px}.slide{padding:44px 7vw 70px}.hero{grid-template-columns:1fr;gap:12px}.hero-graphic{min-height:250px;order:-1}.hero h1{font-size:42px}.compare{grid-template-columns:1fr;gap:26px}.lesson-head{display:block}.definition{margin-top:-12px}.note{right:7vw;bottom:20px}.nav{right:7vw;bottom:42px} }
+  </style>
+</head>
+<body>
+  <main class="deck" id="deck">
+    <header class="toolbar">
+      <div class="brand"><i></i> DATA / BUSAN PARK HEAT</div>
+      <div class="theme-toggle" aria-label="디자인 시안 선택">
+        <button class="active" data-theme="ppt">01 · PPT 양식</button>
+        <button data-theme="tesla">02 · TESLA</button>
+      </div>
+    </header>
+
+    <section class="slide hero active" aria-label="하이라이트 1">
+      <div class="copy">
+        <p class="eyebrow">HIGHLIGHT / QUESTION</p>
+        <h1>공원 옆에 살면,<br><span class="accent">정말</span> 더 시원할까?</h1>
+        <p class="lead">부산의 도시공원 주변을 기준으로, 여름날 땅 표면의 뜨거움을 비교해 봅니다. ‘감’이 아니라 데이터로 답해볼 시간입니다.</p>
+        <p class="hint"><span class="dot"></span> 방향키 또는 아래 버튼으로 다음 하이라이트</p>
+      </div>
+      <div class="hero-graphic" aria-label="공원과 인접 주거지를 나타낸 개념 일러스트">
+        <div class="sun"></div><div class="road"></div><div class="park"></div><div class="house"></div>
+        <div class="tag"><strong>공원 옆</strong>어디까지일까?</div>
+      </div>
+      <div class="nav"><button data-prev aria-label="이전">←</button><button data-next aria-label="다음">→</button></div>
+    </section>
+
+    <section class="slide lesson" aria-label="하이라이트 2">
+      <div class="lesson-head">
+        <div><p class="eyebrow">HIGHLIGHT / METHOD</p><h2>‘시원함’은 이렇게<br>비교합니다.</h2></div>
+        <p class="definition"><b>지표면 온도(LST)</b>는 위성이 바라본 땅 표면의 온도입니다. 사람 키 높이에서 재는 기온과는 다르므로, 슬라이드 내내 둘을 구분해 읽습니다.</p>
+      </div>
+      <div class="compare" aria-label="실측 전 개념 시연 그래프">
+        <article class="zone"><div class="zone-top">공원 내부 <span>나무·잔디가 많은 구역</span></div><div class="thermo cool"><div><label>낮은 표면 열</label></div></div></article>
+        <article class="zone"><div class="zone-top">공원 밖 인접 지역 <span>도로·건물이 많은 구역</span></div><div class="thermo warm"><div><label>높은 표면 열</label></div></div></article>
+      </div>
+      <div class="checklist"><div><b>01</b>같은 날짜·시간</div><div><b>02</b>공원에서의 거리</div><div><b>03</b>주변 토지피복</div><div><b>04</b>공원 크기·식생</div></div>
+      <p class="note">개념 시연 · 실제 수치와 결과는 데이터 정리 후 반영</p>
+      <div class="nav"><button data-prev aria-label="이전">←</button><button data-next aria-label="다음">→</button></div>
+    </section>
+  </main>
+  <script>
+    const deck = document.querySelector('#deck');
+    const slides = [...document.querySelectorAll('.slide')]; let current = 0;
+    function animateSlide(slide) {
+      const targets = slide.querySelectorAll('h1,h2,.eyebrow,.lead,.hero-graphic,.definition,.zone,.checklist');
+      if (window.anime) anime({ targets, opacity:[0,1], translateY:[18,0], delay:anime.stagger(90), duration:650, easing:'easeOutCubic' });
+      const bars = slide.querySelectorAll('.thermo div'); bars.forEach(bar => bar.style.width = '72%');
+      if (window.anime && bars.length) anime({targets:bars, width:['0%','72%'], delay:260, duration:1050, easing:'easeOutCubic'});
+      // 네트워크나 절전 모드로 애니메이션 프레임이 멈춰도 내용은 읽을 수 있게 한다.
+      setTimeout(() => { targets.forEach(target => { target.style.opacity = '1'; target.style.transform = 'none'; }); bars.forEach(bar => bar.style.width = '72%'); }, 1300);
+    }
+    function show(index) { current = (index + slides.length) % slides.length; slides.forEach((s,i)=>s.classList.toggle('active',i===current)); animateSlide(slides[current]); }
+    document.querySelectorAll('[data-next]').forEach(b=>b.onclick=()=>show(current+1));
+    document.querySelectorAll('[data-prev]').forEach(b=>b.onclick=()=>show(current-1));
+    document.addEventListener('keydown', e=>{ if(e.key==='ArrowRight'||e.key===' ') show(current+1); if(e.key==='ArrowLeft') show(current-1); });
+    document.querySelectorAll('[data-theme]').forEach(button=>button.onclick=()=>{ deck.classList.toggle('tesla',button.dataset.theme==='tesla'); document.querySelectorAll('[data-theme]').forEach(b=>b.classList.toggle('active',b===button)); animateSlide(slides[current]); });
+    window.addEventListener('load',()=>setTimeout(()=>animateSlide(slides[0]),100));
+  </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# User-provided source files remain local unless deliberately curated.
+_inbox/*
+!_inbox/.gitkeep
+
+# Local browser and editor artefacts
+.DS_Store
+Thumbs.db
