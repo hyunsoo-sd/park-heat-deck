@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>공원 옆에 살면 정말 더 시원할까?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+<style>
+:root{--ink:#102a43;--blue:#2474b5;--teal:#2f855a;--coral:#e76f51;--paper:#f7fafc;--mute:#456073;--line:#dbe5ec;--card:#fff}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#dce5eb;color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;overflow:hidden}
+button{font:inherit;cursor:pointer}
+h1,h2,h3,p{margin-top:0}
+.deck{width:min(1440px,100vw);height:100svh;margin:auto;overflow:hidden;background:var(--paper);display:flex;flex-direction:column}
+.toolbar{flex:none;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 5.5vw;background:rgba(255,255,255,.9);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:-.02em}
+.brand i{width:11px;height:11px;border-radius:50%;background:var(--coral)}
+.sect{font:12px "DM Mono",monospace;color:#647989}
+.theme{display:flex;padding:3px;gap:3px;background:#edf2f5;border-radius:7px}
+.theme button{border:0;background:transparent;border-radius:4px;padding:8px 12px;color:#526575;font-size:12px}
+.theme button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px #aab8c333}
+.slides{flex:1;position:relative;min-height:0}
+.slide{position:absolute;inset:0;display:none;grid-template-columns:1fr 1fr;gap:6vw;align-content:center;align-items:center;padding:clamp(28px,5vw,80px) 9vw 76px;overflow:auto}
+.slide.on{display:grid}
+.eyebrow{margin:0 0 16px;font:12px "DM Mono",monospace;letter-spacing:.08em;color:var(--blue)}
+h1{max-width:920px;margin-bottom:24px;font-size:clamp(40px,5.6vw,80px);line-height:1.14;letter-spacing:-.065em;font-weight:700}
+h2{font-size:clamp(28px,3.9vw,54px);line-height:1.2;letter-spacing:-.06em;font-weight:700;margin-bottom:18px}
+.lead{max-width:560px;color:var(--mute);font-size:clamp(15px,1.4vw,20px);line-height:1.7;word-break:keep-all;margin-bottom:0}
+.ac{color:var(--teal)}
+.note{position:absolute;left:9vw;right:9vw;bottom:24px;margin:0;color:#758795;font-size:11px;padding-right:110px}
+.pg{position:absolute;left:9vw;bottom:44px;font:11px "DM Mono",monospace;color:#7c909c}
+.nav{position:absolute;right:9vw;bottom:20px;display:flex;gap:8px}
+.nav button{width:38px;height:34px;border:1px solid #bdd0dc;border-radius:4px;background:#fff;color:var(--ink)}
+.nav button:hover{background:var(--blue);border-color:var(--blue);color:#fff}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:18px}
+.cards:first-child{margin-top:0}
+.cards article{padding:16px 18px;border-radius:4px;background:var(--card);border-top:3px solid var(--blue)}
+.cards article:nth-child(even){border-top-color:var(--teal)}
+.cards b{display:block;font-size:16px;margin-bottom:6px;letter-spacing:-.03em}
+.cards p{margin:0;color:var(--mute);font-size:13px;line-height:1.6;word-break:keep-all}
+.quote{font-size:clamp(26px,3.4vw,46px);line-height:1.35;letter-spacing:-.06em;font-weight:700;padding:10px 0 10px 24px;border-left:4px solid var(--coral)}
+.zone{display:grid;gap:10px;margin-bottom:22px}
+.zt{display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:600}
+.zt span{font:12px "DM Mono",monospace;color:#647989;font-weight:400}
+.thermo{height:62px;border-radius:5px;overflow:hidden;background:#dce8ed}
+.thermo div{height:100%;width:0;background:var(--blue)}
+.thermo.warm div{background:var(--coral)}
+.ex{margin:6px 0 0;padding:8px 12px;display:inline-block;background:#fff;border-radius:4px;font:12px "DM Mono",monospace;color:var(--coral)}
+.nums{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.nums div{padding:18px;background:#fff;border-radius:4px;font-size:13px;color:var(--mute);line-height:1.5}
+.nums b{display:block;font:500 clamp(26px,3.2vw,44px) "DM Mono",monospace;letter-spacing:-.06em;color:var(--blue);margin-bottom:6px}
+.nums small{font:13px "Noto Sans KR";margin-left:4px}
+.map{height:230px;background:#e3eef3;border-radius:5px;position:relative;overflow:hidden}
+.map:before{content:"";position:absolute;inset:-10% -10% 40% 35%;background:#58a96d55;border-radius:50% 40% 60% 30%}
+.map:after{content:"";position:absolute;left:-5%;right:-5%;bottom:-30%;height:60%;background:#bcd9e8;border-radius:50%}
+.pin{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--coral);box-shadow:0 0 0 6px #e76f5133;z-index:1}
+.p1{left:25%;top:48%}.p2{left:50%;top:30%}.p3{left:70%;top:55%}.p4{left:38%;top:22%}
+.map span{position:absolute;left:12px;top:10px;z-index:2;font:11px "DM Mono",monospace;color:#587382}
+.scope{display:flex;flex-wrap:wrap;align-items:center;gap:22px}
+.rings{position:relative;flex:none;width:min(260px,70vw);aspect-ratio:1;margin:16px 0}
+.box{flex:1 1 150px;display:grid;gap:14px;padding:16px 18px;background:#fff;border-radius:4px;border-left:3px solid var(--blue)}
+.box p{margin:0;font-size:14px;font-weight:600;line-height:1.45;word-break:keep-all}
+.box span{display:block;margin-bottom:2px;font:400 11px "DM Mono",monospace;color:#647989}
+.ring{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:1px solid #7ea0ae;border-radius:50%}
+.r1{width:28%;height:28%;background:#4c9b61cc;border:0}.r2{width:54%;height:54%}.r3{width:78%;height:78%}.r4{width:100%;height:100%}
+.rings em{position:absolute;z-index:2;left:50%;transform:translate(-50%,-50%);padding:1px 7px;white-space:nowrap;background:var(--paper);font:normal 11px "DM Mono",monospace;color:#587382}
+.flow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.flow div{flex:1;min-width:110px;padding:16px;background:#fff;border-radius:4px;font-size:14px;font-weight:600}
+.flow i{color:var(--blue);font-style:normal}
+.refs{margin:0;padding-left:20px;color:var(--mute);font-size:13px;line-height:1.85}
+.hero{background:linear-gradient(135deg,var(--paper) 55%,#e6f1ec 55%)}
+.hg{position:relative;min-height:340px;display:grid;place-items:center}
+.sun{position:absolute;width:clamp(120px,16vw,220px);aspect-ratio:1;border-radius:50%;background:var(--coral);top:4%;right:10%;opacity:.92}
+.park{width:min(300px,80%);aspect-ratio:1.35;position:relative;z-index:1;transform:skewY(-4deg);background:#58a96d;border-radius:48% 52% 43% 57%/54% 41% 59% 46%}
+.park:before,.park:after{content:"";position:absolute;border-radius:50%;background:#8ed18b}
+.park:before{width:38%;height:28%;top:20%;left:19%}.park:after{width:23%;height:19%;right:19%;bottom:22%}
+.road{position:absolute;z-index:2;width:95%;height:70px;border-top:14px solid #dae4e7;border-bottom:14px solid #dae4e7;transform:rotate(-9deg)}
+.house{position:absolute;z-index:3;right:2%;bottom:8%;width:84px;height:66px;background:#fff;border:8px solid #1d4055;border-radius:5px}
+.house:before{content:"";position:absolute;left:-16px;top:-48px;border-left:50px solid transparent;border-right:50px solid transparent;border-bottom:44px solid #1d4055}
+.tag{position:absolute;z-index:4;right:3%;top:15%;padding:9px 11px;border-radius:5px;background:#fff;color:#27495e;font-size:13px;box-shadow:0 8px 20px #17314b18}
+.tag strong{display:block;color:var(--coral);font-size:18px}
+.hint{display:flex;align-items:center;gap:10px;margin-top:26px;color:#637b8b;font-size:12px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--blue);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{transform:scale(1.8);opacity:.25}}
+/* Tesla theme */
+.deck.tesla{--ink:#171a20;--blue:#3e6ae1;--teal:#171a20;--coral:#3e6ae1;--paper:#fff;--mute:#393c41;--line:#eee;background:#fff}
+.tesla .toolbar{background:#fff;border:0}
+.tesla .brand i{border-radius:0}
+.tesla .theme{background:#f4f4f4;border-radius:4px}
+.tesla .theme button,.tesla .theme button.on,.tesla .nav button{border-radius:4px;box-shadow:none}
+.tesla h1,.tesla h2{font-weight:500}
+.tesla .cards article,.tesla .nums div,.tesla .flow div{background:#f4f4f4;border-radius:0}
+.tesla .hero{background:#f4f4f4}
+.tesla .sun{border-radius:0;width:36%;aspect-ratio:1.7;top:10%;right:-6%;opacity:1}
+.tesla .park{background:#171a20;border-radius:0;transform:none;clip-path:polygon(6% 0,100% 0,94% 100%,0 100%)}
+.tesla .park:before,.tesla .park:after{background:#fff;border-radius:0;opacity:.27}
+.tesla .road{border-color:#fff}
+.tesla .house{border-radius:0;border-color:#171a20}.tesla .house:before{border-bottom-color:#171a20}
+.tesla .tag{box-shadow:none;border-radius:0}
+.tesla .thermo{border-radius:0;background:#e4e4e4}
+.tesla .ex{background:#f4f4f4;border-radius:0}
+.tesla .box{background:#f4f4f4;border-radius:0}
+.tesla .map{border-radius:0;background:#f4f4f4}.tesla .map:before{background:#171a2033}.tesla .map:after{background:#d9dde8}
+.tesla .note{color:#5c5e62}
+@media(max-width:760px){
+.toolbar{padding:0 20px}.brand{font-size:11px}.sect{display:none}.theme button{padding:7px 8px}
+.slide{grid-template-columns:1fr;gap:20px;align-content:start;padding:32px 24px 90px}
+.hero .hg{order:-1;min-height:240px}
+.cards{grid-template-columns:1fr 1fr}.nums{grid-template-columns:1fr 1fr}
+.pg{left:24px}.nav{right:24px}.note{left:24px;right:24px;bottom:62px;padding-right:0}
+}
+@media(prefers-reduced-motion:reduce){.dot{animation:none}}
+</style>
+</head>
+<body>
+<main class="deck" id="deck">
+  <header class="toolbar">
+    <div class="brand"><i></i>DATA / BUSAN PARK HEAT</div>
+    <div class="sect" id="sect"></div>
+    <div class="theme" aria-label="디자인 시안 선택"><button class="on" data-theme="ppt">01 · PPT 양식</button><button data-theme="tesla">02 · TESLA</button></div>
+  </header>
+  <div class="slides" id="root"></div>
+</main>
+<script>
+const D=[
+{e:'BUSAN · LANDSCAPE × DATA',t:'공원 옆에 살면,<br><span class="ac">정말</span> 더 시원할까?',l:'부산 도시공원과 여름철 지표면온도의 관계를 데이터로 살펴봅니다. 조경학과 데이터분석 중간고사 대체 과제입니다.',v:'hero'},
+{e:'CONTENTS',t:'질문에서 분석 계획까지',l:'문제를 먼저 보고, 데이터를 모으고, 분석 방법과 한계를 정리합니다.',i:[['03–05','질문과 조경의 관점'],['06–10','부산과 선행연구'],['11–15','가설·용어·데이터'],['16–20','수집·변수·분석'],['21–23','한계·의미·일정'],['24','참고문헌']]},
+{e:'ONE QUESTION',t:'공원과 가까울수록<br>여름의 땅은 덜 뜨거울까?',l:'공원 내부부터 주변 500 m까지, 같은 날의 격자별 지표면온도를 비교합니다.',v:'quote',i:['“공원이 있나?”가 아니라<br>“얼마나 가깝고, 어떤 공원인가?”']},
+{e:'WHY HEAT',t:'도시는 열을 저장합니다.',l:'대구 연구는 식생이 많은 곳의 표면온도가 낮고, 인공포장이 많은 곳은 점점 높아진다고 보고했습니다.',v:'thermo',i:[['녹지가 많은 곳','나무·풀',38],['인공포장이 많은 곳','도로·건물',80,1]],ex:'개념 도식 · 실제 수치 아님',n:'근거: 박경훈·정성관(1999), 대구 Landsat TM 분석'},
+{e:'LANDSCAPE LENS',t:'조경가가 다루는<br>열을 낮추는 세 표면',l:'공원의 시원함은 하나의 요인이 아니라 설계 가능한 표면의 조합입니다.',i:[['그늘','수관이 햇빛을 막아 표면이 덜 달아오릅니다.'],['증발산','식물과 흙의 수분이 증발하며 열을 가져갑니다.'],['투수 표면','빗물이 스며 수분을 저장해 표면 열을 완화합니다.']]},
+{e:'BUSAN',t:'부산은 하나의<br>온도가 아닙니다.',l:'해안·산지·시가지가 공존하므로 공원의 냉각 효과도 장소별로 읽어야 합니다.',v:'map',i:[['+1.6 ℃','1966–2015년 부산 연평균 기온 상승'],['내륙 > 해안','금정구·북구 평균 온도가 남구·해운대구보다 높음']],n:'출처: 서울신문(2017.8.30), 부산시 분석 보도'},
+{e:'VULNERABILITY',t:'뜨거운 곳은<br>무엇이 다를까?',l:'부산의 세부 공간 분석에서 높은 지표면온도는 열섬 취약지역과 겹쳤습니다.',i:[['불투수면 많음','물이 스며들지 못해 열이 쌓입니다.'],['식생 부족','그늘과 증발산이 적습니다.'],['주거·공업지역','밀집한 시가지에서 높게 나타났습니다.']],n:'출처: 부산광역시 시민생각 게시글(2026.9)'},
+{e:'PRECEDENT',t:'대구·서울:<br>녹지와 열의 관계',l:'녹지의 양뿐 아니라 모양과 배치도 표면온도를 바꾸는지 살핀 연구들입니다.',i:[['대구 · 1999','Landsat TM 열적외선 밴드로 열섬을 보고, NDVI와 표면온도의 상관으로 녹지의 완화 효과를 분석'],['서울 · 2015','Landsat 7·8 영상(2013–2015)과 Fragstats로 녹지 형태와 지표면온도의 관계를 분석'],['남은 질문','공원 주변 몇 미터까지 영향이 이어질까?']],n:'출처: 박경훈·정성관(1999), 한국조경학회 공동학술대회(2015)'},
+{e:'PRECEDENT',t:'구미·신도시:<br>변화 전후를 비교',l:'나무를 심거나 도시를 개발한 전후의 표면온도 변화를 위성영상으로 비교했습니다.',v:'nums',i:[['7.24','km²','구미 한 지역의 녹지 증가'],['4.93','km²','구미 다른 지역의 녹지 증가'],['+0.14–0.16','','식생지수 증가'],['−0.8–1.2','℃','지표면 온도 변화']],n:'출처: 김경훈 외(2022). 분당·판교는 이경일(2023)이 Landsat으로 개발 전후를 비교'},
+{e:'RESEARCH QUESTION',t:'이 분석이 채우려는<br>질문',l:'선행연구는 녹지의 양과 형태를 다뤘습니다. 이 분석은 부산 공원 주변을 같은 날짜·같은 거리 구간으로 나눠 봅니다.',v:'quote',i:['같은 여름날,<br>같은 격자,<br>같은 거리 기준']},
+{e:'HYPOTHESES',t:'세 가지 가설',l:'결과를 보기 전에 무엇을 확인할지 먼저 적어 둡니다.',i:[['H1','공원에 가까울수록 지표면온도가 낮다.'],['H2','식생(NDVI)이 많을수록 지표면온도가 낮다.'],['H3','큰 공원일수록 냉각 범위가 넓다.']]},
+{e:'TERMS',t:'처음 보는 네 단어',l:'분석에 나올 용어를 한 줄로 먼저 정리합니다.',i:[['LST','위성이 본 땅 표면의 온도. 사람 키 높이의 기온과는 다릅니다.'],['NDVI','식물이 얼마나 푸른지 나타내는 지수. 높을수록 식생이 풍부합니다.'],['상관계수','두 값이 함께 움직이는 정도. −1에서 1 사이입니다.'],['회귀분석','다른 조건을 고정하고 한 요인의 영향을 추정합니다.']]},
+{e:'SCOPE',t:'부산 · 여름 · 격자',l:'대상은 부산 도시공원, 기간은 여름철 구름 없는 관측일, 단위는 같은 크기의 분석 격자입니다.',v:'rings',i:[['대상지','부산 도시공원'],['기간','여름철 맑은 날'],['단위','동일 크기 격자']],n:'거리 구간(0–100 m, 100–300 m, 300–500 m)은 이 분석의 설계안입니다.'},
+{e:'DATA',t:'도시공원 데이터',l:'공원 안과 밖을 가르는 기준이 되는 자료입니다.',i:[['위치·이름','공원이 어디에 있는지'],['면적','H3 가설의 설명변수'],['유형','근린·어린이·체육공원 등'],['경계','내부와 거리 구간을 나누는 기준']],n:'출처: 공공데이터포털 전국도시공원표준데이터(유형·소재지·시설 등 18개 항목 표준)'},
+{e:'DATA',t:'위성은 표면을,<br>기상청은 공기를 봅니다.',l:'두 자료는 같은 온도가 아니므로 역할을 나눠 씁니다.',i:[['Landsat LST','땅 표면의 열. 분석의 결과 변수입니다.'],['기상청 관측값','공기의 온도. 날짜 조건을 확인하는 보조 정보입니다.']],n:'출처: USGS Landsat, 기상청 기상자료개방포털'},
+{e:'COLLECTION',t:'수집 경로를<br>기록합니다.',l:'어디서 받은 자료인지 남겨 두면 결과를 다시 확인할 수 있습니다.',v:'flow',i:['공공데이터 API','공식 포털','Firecrawl','Kaggle']},
+{e:'VARIABLES',t:'무엇을 설명하고,<br>무엇을 통제할까?',l:'공원 효과만 따로 보기 위해 다른 조건을 함께 고려합니다.',i:[['결과','지표면온도(LST)'],['핵심 원인','공원까지 거리 · 공원 면적 · NDVI'],['통제','불투수면 · 고도 · 해안 거리 · 관측일']]},
+{e:'ANALYSIS 1–2',t:'먼저 깨끗하게,<br>그다음 넓게 봅니다.',l:'분석 전에 자료를 정리하고 전체 모양부터 확인합니다.',i:[['전처리','좌표계·날짜·구름·결측치를 정리합니다.'],['탐색','지도·분포·이상치를 확인합니다. (seaborn)']]},
+{e:'ANALYSIS 3–4',t:'거리를 비교하고,<br>관계를 분리합니다.',l:'단순 비교에서 시작해 다른 조건을 고려한 분석으로 넘어갑니다.',i:[['거리별 비교','0–100 · 100–300 · 300–500 m의 평균·중앙값·표본 수를 비교합니다.'],['상관·회귀','다른 변수를 통제하고 거리의 영향을 추정합니다.']]},
+{e:'PREVIEW',t:'거리별 평균 온도,<br>이런 모양으로 비교합니다.',l:'H1이 맞다면 공원에서 멀어질수록 막대가 길어지는 형태가 나옵니다.',v:'thermo',i:[['공원 안','',36],['0–100 m','',52],['100–300 m','',66],['300–500 m','',78,1]],ex:'예시 도식, 실제 수치 아님'},
+{e:'LIMITS',t:'데이터는<br>정직하게 읽어야 합니다.',l:'결과가 나와도 단정하지 않는 이유를 미리 적어 둡니다.',i:[['상관 ≠ 인과','공원 근처가 시원해도 공원 때문이라고 단정하지 않습니다.'],['해상도','열적외선 영상은 작은 공원의 효과를 구분하기 어렵습니다.'],['날짜','구름 낀 날은 쓸 수 없어 몇몇 날짜에 의존합니다.']]},
+{e:'IMPLICATIONS',t:'조경의 결정을<br>데이터로 돕습니다.',l:'분석 결과는 어디에 어떤 녹지를 더할지 판단하는 근거가 됩니다.',i:[['설계','수관·토양·포장의 조합'],['관리','열에 취약한 공원 경계'],['정책','녹지 확충의 우선순위']]},
+{e:'TIMELINE',t:'수집에서 발표까지',l:'다섯 단계로 나눠 진행합니다.',i:[['1주','출처 확인'],['2주','자료 수집'],['3주','전처리·탐색'],['4주','분석·시각화'],['5주','발표']]},
+{e:'REFERENCES',t:'출처와 분석 상태',l:'지금은 선행연구와 공공자료에 기반한 분석 계획입니다. 부산의 거리별 LST 결과는 데이터를 수집·검증한 뒤에만 제시합니다.',v:'refs',i:['박경훈·정성관(1999), 광역적 녹지계획 수립을 위한 도시열섬효과 분석, 한국지리정보학회지','한국조경학회·한국환경복원기술학회 공동학술대회(2015), 도시 녹지의 공간 패턴에 따른 지표면 온도 영향 분석(서울시)','김경훈 외(2022), 도시열섬 완화를 위한 나무심기운동에 따른 지표면 온도 변화 분석 – 구미시','이경일(2023), 신도시 개발에 따른 표면 열섬현상 변화분석 및 도시 형태와의 상관관계','Zhang et al.(2025), Urban green spaces and thermal environments: Seoul and Busan, Forests 16(10)','서울신문(2017.8.30), 부산시 도시열섬 완화 시책 · 부산광역시 시민생각(2026.9)','공공데이터포털 전국도시공원표준데이터 · USGS Landsat · 기상청 기상자료개방포털']}
+];
+const cards=a=>`<div class="cards">${a.map(x=>`<article><b>${x[0]}</b><p>${x[1]}</p></article>`).join('')}</div>`;
+function vis(s){const t=s.v,a=s.i||[];
+ if(t==='hero')return `<div class="hg"><i class="sun"></i><i class="road"></i><i class="park"></i><i class="house"></i><div class="tag"><strong>공원 옆</strong>어디까지일까?</div></div>`;
+ if(t==='quote')return `<div class="quote">${a[0]}</div>`;
+ if(t==='thermo')return `<div>${a.map(z=>`<div class="zone"><div class="zt">${z[0]}<span>${z[1]}</span></div><div class="thermo${z[3]?' warm':''}"><div data-w="${z[2]}"></div></div></div>`).join('')}<p class="ex">${s.ex}</p></div>`;
+ if(t==='map')return `<div><div class="map"><span>개념 도식 · 실제 지도 아님</span>${[1,2,3,4].map(n=>`<i class="pin p${n}"></i>`).join('')}</div>${cards(a)}</div>`;
+ if(t==='nums')return `<div class="nums">${a.map(x=>`<div><b${/^[\d.]+$/.test(x[0])?` data-to="${x[0]}"`:''}>${x[0]}<small>${x[1]}</small></b>${x[2]}</div>`).join('')}</div>`;
+ if(t==='rings')return `<div class="scope"><div class="rings"><i class="ring r4"></i><i class="ring r3"></i><i class="ring r2"></i><i class="ring r1"></i><em style="top:50%;background:none;color:#fff">공원</em><em style="top:23%">0–100 m</em><em style="top:11%">100–300 m</em><em style="top:0">300–500 m</em></div><div class="box">${a.map(x=>`<p><span>${x[0]}</span>${x[1]}</p>`).join('')}</div></div>`;
+ if(t==='flow')return `<div class="flow">${a.map((x,k)=>(k?'<i>→</i>':'')+`<div>${x}</div>`).join('')}</div>`;
+ if(t==='refs')return `<ol class="refs">${a.map(x=>`<li>${x}</li>`).join('')}</ol>`;
+ return cards(a)}
+const root=document.getElementById('root'),deck=document.getElementById('deck'),N=D.length;
+root.innerHTML=D.map((s,k)=>`<section class="slide${k?'':' hero on'}"><div>${k?`<p class="eyebrow">${s.e}</p><h2>${s.t}</h2>`:`<p class="eyebrow">${s.e}</p><h1>${s.t}</h1>`}<p class="lead">${s.l}</p>${k?'':'<p class="hint"><span class="dot"></span>방향키, 스와이프 또는 아래 버튼으로 넘기기</p>'}</div>${vis(s)}${s.n?`<p class="note">${s.n}</p>`:''}<span class="pg">${String(k+1).padStart(2,'0')} / ${N}</span><div class="nav"><button data-prev aria-label="이전">←</button><button data-next aria-label="다음">→</button></div></section>`).join('');
+const S=[...document.querySelectorAll('.slide')];let i=0;
+function go(n){i=(n+N)%N;S.forEach((s,j)=>s.classList.toggle('on',j===i));
+ if(location.hash!=='#'+(i+1))history.replaceState(null,'','#'+(i+1));
+ document.getElementById('sect').textContent=String(i+1).padStart(2,'0')+' · '+D[i].e;
+ const s=S[i],e=[...s.querySelectorAll('.eyebrow,h1,h2,.lead,.cards article,.nums div,.zone,.quote,.flow div,.refs li,.hg')];
+ if(window.anime){
+  anime({targets:e,opacity:[0,1],translateY:[14,0],delay:anime.stagger(50),duration:480,easing:'easeOutCubic'});
+  s.querySelectorAll('.thermo div').forEach(b=>anime({targets:b,width:['0%',b.dataset.w+'%'],delay:300,duration:1000,easing:'easeOutCubic'}));
+  s.querySelectorAll('[data-to]').forEach(b=>{const to=+b.dataset.to,d=(b.dataset.to.split('.')[1]||'').length,o={v:0};anime({targets:o,v:to,duration:1100,delay:200,easing:'easeOutCubic',update:()=>{b.firstChild.textContent=o.v.toFixed(d)}})});
+ }
+ setTimeout(()=>{e.forEach(x=>{x.style.opacity=1;x.style.transform='none'});s.querySelectorAll('.thermo div').forEach(b=>b.style.width=b.dataset.w+'%');s.querySelectorAll('[data-to]').forEach(b=>b.firstChild.textContent=b.dataset.to)},1500)}
+document.addEventListener('click',e=>{if(e.target.matches('[data-next]'))go(i+1);if(e.target.matches('[data-prev]'))go(i-1)});
+document.addEventListener('keydown',e=>{if(['ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();go(i+1)}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(i-1)}});
+let sx=0;root.addEventListener('touchstart',e=>{sx=e.changedTouches[0].clientX},{passive:true});
+root.addEventListener('touchend',e=>{const d=e.changedTouches[0].clientX-sx;if(Math.abs(d)>50)go(i+(d<0?1:-1))},{passive:true});
+document.querySelectorAll('[data-theme]').forEach(b=>b.onclick=()=>{deck.classList.toggle('tesla',b.dataset.theme==='tesla');document.querySelectorAll('[data-theme]').forEach(x=>x.classList.toggle('on',x===b))});
+addEventListener('hashchange',()=>{const n=+location.hash.slice(1);if(n&&n-1!==i)go(n-1)});
+addEventListener('load',()=>go(Math.min(N,Math.max(1,+location.hash.slice(1)||1))-1));
+</script>
+</body>
+</html>
